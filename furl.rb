@@ -25,7 +25,7 @@ class FedoraApi
   def create_datastream(url_path)
     timestamp = Time.now.to_s[0..18]
     uri = URI.parse(@root_url)
-    # Both cases gives HTTP 415 (?)
+    # These commented paths don't work, they boty give HTTP 415 (?)
     # if url_path == nil
     #   url = "#{uri.path}/fcr:content" 
     # else
@@ -62,13 +62,18 @@ class FedoraApi
     end
   end
 
+
+  def fixity(object_url, format = "application/rdf+xml")
+    uri = URI.parse("#{object_url}/fcr:fixity")
+    request = Net::HTTP::Get.new(uri)
+    request["Accept"] = format # application/rdf+xml or application/ld+json or text/plain
+    response = Net::HTTP.start(uri.hostname, uri.port) {|http|
+      http.request(request)
+    }
+  end
+
+
   def test(url_path)
-    uri = URI.parse(@root_url)
-    http = Net::HTTP.new(uri.hostname, uri.port)
-    url = "#{uri.path}/#{url_path}/fcr:content"
-    puts "HTTP PUT: #{url}"
-    body = "Hello from Ruby at #{Time.now.to_s[0..18]}"
-    response = http.send_request("PUT", url, body)
   end
 
 end
@@ -86,6 +91,9 @@ def show_syntax
   puts ""
   puts "To create a datastream"
   puts "    furl createds path/to/new/object"
+  puts ""
+  puts "To check fixity"
+  puts "    furl fixity http://full/path/to/object"
   puts ""
 end
 
@@ -117,6 +125,9 @@ elsif action == "createds"
 elsif action == "createobj"
   url_path = ARGV[1]
   response = api.create_object(url_path)
+elsif action == "fixity"
+  id = ARGV[1]
+  response = api.fixity(id) if id != nil
 elsif action == "test"
   response = api.test("testX")
 end
