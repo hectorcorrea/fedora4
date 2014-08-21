@@ -3,69 +3,70 @@ require "./fedora_api"
 
 def show_syntax
   puts "Syntax:"
-  puts "    furl get|createobj|createds|fixity full_path_to_object [options]"
-  puts ""
-  puts "To retrieve a node"
-  puts "    furl get http://full/path/to/object"
+  puts "    furl createobj|createds|get|getds|fixity full_path_to_object [options]"
   puts ""
   puts "To create an object"
-  puts "    furl createobj [http://full/path/to/new/object]"
+  puts "    furl createobj http://full/path/to/new/object"
   puts ""
   puts "To create a datastream"
   puts "    furl createds http://full/path/to/new/datastream text_content"
   puts ""
+  puts "To retrieve a document or a datastream"
+  puts "    furl get http://full/path/to/object"
+  puts ""
+  puts "To retrieve the content of a datastream"
+  puts "    furl getds http://full/path/to/datastream"
+  puts ""
   puts "To check fixity on a datastream"
   puts "    furl fixity http://full/path/to/object"
+  puts ""
+  puts "Samples"
+  puts '    furl createobj http://localhost:8080/rest/testDoc1'
+  puts '    furl createds http://localhost:8080/rest/testDoc1/testDataSet1 "some text"'
+  puts '    furl get http://localhost:8080/rest/testDoc1'
+  puts '    furl get http://localhost:8080/rest/testDoc1/testDataSet1'
+  puts '    furl getds http://localhost:8080/rest/testDoc1/testDataSet1'
+  puts '    furl fixity http://localhost:8080/rest/testDoc1/testDataSet1'
   puts ""
 end
 
 
-def print_response(response, include_body = true)
-  puts "* Status: #{response.code}"
-  puts "* Headers"
-  headers = response.to_hash
-  headers.each do |k,v| 
-    puts "#{k} = #{v}"
-  end
+def print_doc(doc, include_body = true)
+  puts "HTTP Status: #{doc.status}"
+  puts "Location: #{doc.location}" if doc.location
   if include_body
-    puts "* Body"
-    puts response.body
+    puts "Fedora Body:"
+    puts doc.body
   end
 end
 
 
 action = ARGV[0]
-response = nil
+object_url = ARGV[1]
+doc = nil
 api = FedoraApi.new
 
-if action == "get"
-  object_url = ARGV[1]
-  response = api.get_node(object_url) if object_url != nil
-elsif action == "createds"
-  object_url = ARGV[1]
-  content = ARGV[2]
-  if content != nil
-    if content[0] == '@'
-      # TODO 
-      # we've received a file name, read its content
-      # content = File.read(content)
-    end
-    response = api.create_datastream(object_url, content)
+if action != nil && object_url != nil
+  case action
+  when "get"
+    doc = api.get_node(object_url)
+  when "getds"
+    doc = api.get_content(object_url)
+  when "createds"
+    content = ARGV[2]
+    doc = api.create_datastream(object_url, content) if content != nil
+  when "createobj"
+    doc = api.create_object(object_url)
+  when "fixity"
+    doc = api.fixity(object_url) 
+  when "test"
+    doc = api.test(object_url)
   end
-elsif action == "createobj"
-  object_url = ARGV[1]
-  response = api.create_object(object_url)
-elsif action == "fixity"
-  object_url = ARGV[1]
-  response = api.fixity(object_url) if object_url != nil
-elsif action == "test"
-  object_url = ARGV[1]
-  response = api.test(object_url)
 end
 
-if response == nil
+if doc == nil
   show_syntax
 else 
-  print_response response
+  print_doc doc
 end
 

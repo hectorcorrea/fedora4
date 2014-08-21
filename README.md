@@ -1,4 +1,5 @@
-A set of demos using the Fedora 4 HTTP API from Ruby.
+A set of very basic demos using the Fedora 4 HTTP API from Ruby.
+
 
 Requirements
 ------------
@@ -9,6 +10,7 @@ These demos have been tested with Fedora 4 beta 01.
 * Click "Start" on the prompt to start Fedora. By default Fedora will listen on port 8080. 
 
 At this point you should be able to go browse to http://localhost:8080/rest/ and see the the Fedora web interface.
+
 
 Demo
 ----
@@ -26,6 +28,11 @@ The code
 * demo.rb is just that, a small demo of the basic functionality.
 * fedora_api.rb is a wrapper for the Fedora HTTP API.
 * fedora_doc.rb is a small helper class to convert an HTTP response from fedora_api into a Fedora document with fields like "location" and "body"
+* furl.rb is a small program to interface with fedora_api. A joke of a "cURL for Fedora"
 
+
+Other Resources
+---------------
+For a much more comprehensive sample of how to work with Fedora from Ruby take a look at Rubydora https://github.com/projecthydra/rubydora
 
 
