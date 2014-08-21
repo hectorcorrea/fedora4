@@ -12,7 +12,7 @@ These demos have been tested with Fedora 4 beta 1 and beta 2.
 At this point you should be able to go browse to http://localhost:8080/rest/ and see the the Fedora web interface.
 
 
-Demo
+Demo  
 ----
 There is a demo program that runs through the most basic functionality. It creates a new Fedora object, fetches it, then adds a datastream to it, fetches the datastream, and runs a Fixity check on it.
 
