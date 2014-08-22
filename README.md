@@ -39,6 +39,8 @@ furl is Ruby program that acts a mini "cURL for Fedora" and you can use it execu
 	ruby furl.rb get http://localhost:8080/rest/objectX
 	ruby furl.rb createds http://localhost:8080/rest/objectX/datasetY "some text"
 
+Notice that we always pass the full URL (including `http://localhost:8080/rest`) to the object to fetch or save. 
+
 furl is NOT a cURL replacement, it's more a toy to get started.
 
 
