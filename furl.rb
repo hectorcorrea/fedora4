@@ -3,7 +3,7 @@ require "./fedora_api"
 
 def show_syntax
   puts "Syntax:"
-  puts "    furl createobj|createds|get|getds|fixity full_path_to_object [options]"
+  puts "    furl createobj|createds|get|getds|fixity|versions full_path_to_object [options]"
   puts ""
   puts "To create an object"
   puts "    furl createobj http://full/path/to/new/object"
@@ -20,6 +20,9 @@ def show_syntax
   puts "To check fixity on a datastream"
   puts "    furl fixity http://full/path/to/object"
   puts ""
+  puts "To get versions of a document or datastrea"
+  puts "    furl versions http://full/path/to/object"
+  puts ""
   puts "Samples"
   puts '    furl createobj http://localhost:8080/rest/testDoc1'
   puts '    furl createds http://localhost:8080/rest/testDoc1/testDataSet1 "some text"'
@@ -34,7 +37,7 @@ end
 def print_doc(doc, include_body = true)
   puts "HTTP Status: #{doc.status}"
   puts "Location: #{doc.location}" if doc.location
-  if include_body
+  if include_body && doc.body && doc.body.chomp.length > 0
     puts "Fedora Body:"
     puts doc.body
   end
@@ -59,6 +62,8 @@ if action != nil && object_url != nil
     doc = api.create_object(object_url)
   when "fixity"
     doc = api.fixity(object_url) 
+  when "versions"
+    doc = api.versions(object_url) 
   when "test"
     doc = api.test(object_url)
   end

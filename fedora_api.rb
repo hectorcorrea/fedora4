@@ -38,6 +38,8 @@ class FedoraApi
     http = Net::HTTP.new(uri.hostname, uri.port)
     # puts "HTTP PUT: #{url}"
     response = http.send_request("PUT", url, text_content)
+    # TODO: Could we create the document with versioning in one HTTP Call (?)
+    response2 = enable_versioning object_url
     FedoraDoc.new(response, object_url)
   end
 
@@ -56,27 +58,47 @@ class FedoraApi
     #   }
     # end
     # TODO: Accept a variable set of properties
-    response = create_object_with_properties(object_url)
+    response = create_object_with_properties object_url
+    # TODO: Could we create the document with versioning in one HTTP Call (?)
+    response2 = enable_versioning object_url
     FedoraDoc.new(response)
   end
 
 
   def fixity(object_url, format = "application/rdf+xml")
-    uri = URI.parse("#{object_url}/fcr:fixity")
+    response = get_extra object_url, "fcr:fixity", format
+    FedoraDoc.new(response)    
+  end
+
+
+  def versions(object_url, format = "application/rdf+xml")
+    response = get_extra object_url, "fcr:versions", format
+    FedoraDoc.new(response)
+  end
+
+
+  def test(object_url, format = "application/rdf+xml")
+  end
+
+
+  private 
+
+  def get_extra(object_url, extra, format)
+    uri = URI.parse("#{object_url}/#{extra}")
     request = Net::HTTP::Get.new(uri)
     request["Accept"] = format # application/rdf+xml or application/ld+json or text/plain
     response = Net::HTTP.start(uri.hostname, uri.port) {|http|
       http.request(request)
     }
-    FedoraDoc.new(response)
   end
 
-
-  def test(object_url)
+  def enable_versioning(object_url)
+    uri = URI.parse("#{object_url}")
+    response = Net::HTTP.start(uri.hostname, uri.port) {|http|
+      request = Net::HTTP::Post.new(uri.path+"/fcr:versions")
+      http.request(request)
+    } 
   end
-
-
-  private 
 
   def create_object_with_properties(object_url)
     uri = URI.parse("#{object_url}")
@@ -101,7 +123,7 @@ class FedoraApi
       request.body += '</rdf:Description>' + "\r\n"
       request.body += '</rdf:RDF>' + "\r\n"
       http.request(request)
-    }      
+    }    
   end
 
 end

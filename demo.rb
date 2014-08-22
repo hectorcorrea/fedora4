@@ -42,7 +42,7 @@ puts content.body[0..60] + "...[truncated]"
 puts
 
 
-# Fetch the content of the atastream
+# Fetch the content of the datastream
 puts "=" * 50
 puts "Fetching content of datastream from #{datastream.location}..."
 content = api.get_content(datastream.location)
