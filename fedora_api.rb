@@ -77,9 +77,28 @@ class FedoraApi
   end
 
 
-  def test(object_url, format = "application/rdf+xml")
+  def update(object_url, field, old_value, new_value)
+    uri = URI.parse("#{object_url}")
+    # puts "HTTP PUT: #{object_url}"
+    response = Net::HTTP.start(uri.hostname, uri.port) {|http|
+      request = Net::HTTP::Patch.new(uri.path)
+      request["Content-Type"] = "application/sparql-update"
+      request.body = 'PREFIX dc: <http://purl.org/dc/elements/1.1/>' + "\r\n"
+      request.body += 'DELETE { ' + "\r\n"
+      request.body += '  <> ' + field + ' "' + old_value + '" .' + "\r\n"
+      request.body += '}' + "\r\n"
+      request.body += 'INSERT { ' + "\r\n"
+      request.body += '  <> ' + field + ' "' + new_value + '" .' + "\r\n"
+      request.body += '}' + "\r\n"
+      request.body += 'WHERE { }' + "\r\n"
+      http.request(request)
+    }    
+    FedoraDoc.new(response)
   end
 
+  def test
+  end
+  
 
   private 
 

@@ -3,7 +3,7 @@ require "./fedora_api"
 
 def show_syntax
   puts "Syntax:"
-  puts "    furl createobj|createds|get|getds|fixity|versions full_path_to_object [options]"
+  puts "    furl createobj|createds|get|getds|fixity|update|versions full_path_to_object [options]"
   puts ""
   puts "To create an object"
   puts "    furl createobj http://full/path/to/new/object"
@@ -22,6 +22,9 @@ def show_syntax
   puts ""
   puts "To get versions of a document or datastrea"
   puts "    furl versions http://full/path/to/object"
+  puts ""
+  puts "To update a field in a document. The field_name must include the namespace (e.g. dc:title)"
+  puts "    furl update http://full/path/to/object field_name old_value new_value"
   puts ""
   puts "Samples"
   puts '    furl createobj http://localhost:8080/rest/testDoc1'
@@ -64,6 +67,13 @@ if action != nil && object_url != nil
     doc = api.fixity(object_url) 
   when "versions"
     doc = api.versions(object_url) 
+  when "update"
+    field = ARGV[2]
+    old_value = ARGV[3]
+    new_value = ARGV[4]
+    if field != nil && old_value != nil && new_value != nil
+      doc = api.update(object_url, field, old_value, new_value)
+    end
   when "test"
     doc = api.test(object_url)
   end
