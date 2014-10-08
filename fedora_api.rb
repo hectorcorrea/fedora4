@@ -1,3 +1,5 @@
+# Makes HTTP calls to Fedora REST API.
+#
 # References: 
 #    Fedora 4 REST API https://wiki.duraspace.org/display/FF/RESTful+HTTP+API
 #    nethttp cheat sheet http://www.rubyinside.com/nethttp-cheat-sheet-2940.html
@@ -81,9 +83,12 @@ class FedoraApi
     uri = URI.parse("#{object_url}")
     # puts "HTTP PUT: #{object_url}"
     response = Net::HTTP.start(uri.hostname, uri.port) {|http|
+      dublinCorePrefix = 'PREFIX dc: <http://purl.org/dc/elements/1.1/>' + "\r\n"
+      customFieldsPrefix = 'PREFIX xyz: <http://xyz.com/xyz/elements/1.1/>' + "\r\n"
       request = Net::HTTP::Patch.new(uri.path)
       request["Content-Type"] = "application/sparql-update"
-      request.body = 'PREFIX dc: <http://purl.org/dc/elements/1.1/>' + "\r\n"
+      request.body = dublinCorePrefix
+      request.body += customFieldsPrefix
       request.body += 'DELETE { ' + "\r\n"
       request.body += '  <> ' + field + ' "' + old_value + '" .' + "\r\n"
       request.body += '}' + "\r\n"
