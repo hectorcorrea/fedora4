@@ -3,19 +3,19 @@ require "./fedora_api"
 
 def show_syntax
   puts "Syntax:"
-  puts "    furl createrdf|createds|get|getds|fixity|update|versions full_path_to_object [options]"
+  puts "    furl create|createcontent|get|getcontent|fixity|update|versions full_path_to_object [options]"
   puts ""
   puts "To create an RDF source"
-  puts "    furl createrdf http://full/path/to/new/object"
+  puts "    furl create fedora_url path/to/new/rdf-source"
   puts ""
-  puts "To create a datastream"
-  puts "    furl createds http://full/path/to/new/datastream text_content"
+  puts "To create a Non-RDF source (e.g. content)"
+  puts "    furl createcontent fedora_url path/to/new/non-rdf-source content"
   puts ""
-  puts "To retrieve a document or a datastream"
-  puts "    furl get http://full/path/to/object"
+  puts "To retrieve an RDF source"
+  puts "    furl get fedora_url path/to/existing/rdf-source"
   puts ""
-  puts "To retrieve the content of a datastream"
-  puts "    furl getds http://full/path/to/datastream"
+  puts "To retrieve the content of a Non-RDF source"
+  puts "    furl getcontent fedora_url path/to/existing/non-rdf-source"
   puts ""
   puts "To check fixity on a datastream"
   puts "    furl fixity http://full/path/to/object"
@@ -27,14 +27,13 @@ def show_syntax
   puts "    furl update http://full/path/to/object field_name old_value new_value"
   puts ""
   puts ""
-  puts "Samples (assumming Fedora 4 is running on port 8080)"
+  puts "Samples (assuming Fedora 4 is running on http://localhost:8080/rest)"
   puts ""
-  puts '    furl createrdf http://localhost:8080/rest/testRdfSource1'
-  puts '    furl createds http://localhost:8080/rest/testDoc1/testDataSet1 "some text"'
-  puts '    furl get http://localhost:8080/rest/testDoc1'
-  puts '    furl get http://localhost:8080/rest/testDoc1/testDataSet1'
-  puts '    furl getds http://localhost:8080/rest/testDoc1/testDataSet1'
-  puts '    furl fixity http://localhost:8080/rest/testDoc1/testDataSet1'
+  puts '    furl http://localhost:8080/rest create my-new-rdf-source'
+  puts '    furl http://localhost:8080/rest createcontent my-new-rdf-myrdf/content "some text"'
+  puts '    furl http://localhost:8080/rest get my-new-rdf-source'
+  puts '    furl http://localhost:8080/rest getcontent my-new-rdf-myrdf/content'
+  puts '    furl http://localhost:8080/rest fixity http://localhost:8080/rest/testDoc1/testDataSet1'
   puts ""
 end
 
@@ -49,35 +48,36 @@ def print_doc(doc, include_body = true)
 end
 
 
-action = ARGV[0]
-object_url = ARGV[1]
+fedora_url = ARGV[0] || ""
+action = ARGV[1]
+resource_uri = ARGV[2]
 doc = nil
-api = FedoraApi.new
+api = FedoraApi.new(fedora_url, true)
 
-if action != nil && object_url != nil
+if action != nil && resource_uri != nil
   case action
+  when "create"
+    doc = api.create resource_uri
+  when "createcontent", "createc"
+    content = ARGV[3]
+    doc = api.create_non_rdf(resource_uri, content) if content != nil
   when "get"
-    doc = api.get_node(object_url)
-  when "getds"
-    doc = api.get_content(object_url)
-  when "createds"
-    content = ARGV[2]
-    doc = api.create_datastream(object_url, content) if content != nil
-  when "createrdf"
-    doc = api.create_rdf(object_url)
+    doc = api.get resource_uri
+  when "getcontent", "getc"
+    doc = api.get_content resource_uri
   when "fixity"
-    doc = api.fixity(object_url) 
+    doc = api.fixity(resource_uri) 
   when "versions"
-    doc = api.versions(object_url) 
+    doc = api.versions(resource_uri) 
   when "update"
     field = ARGV[2]
     old_value = ARGV[3]
     new_value = ARGV[4]
     if field != nil && old_value != nil && new_value != nil
-      doc = api.update(object_url, field, old_value, new_value)
+      doc = api.update(resource_uri, field, old_value, new_value)
     end
   when "test"
-    doc = api.test(object_url)
+    doc = api.test(resource_uri)
   end
 end
 
