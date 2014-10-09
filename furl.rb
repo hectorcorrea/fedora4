@@ -3,10 +3,10 @@ require "./fedora_api"
 
 def show_syntax
   puts "Syntax:"
-  puts "    furl createobj|createds|get|getds|fixity|update|versions full_path_to_object [options]"
+  puts "    furl createrdf|createds|get|getds|fixity|update|versions full_path_to_object [options]"
   puts ""
-  puts "To create an object"
-  puts "    furl createobj http://full/path/to/new/object"
+  puts "To create an RDF source"
+  puts "    furl createrdf http://full/path/to/new/object"
   puts ""
   puts "To create a datastream"
   puts "    furl createds http://full/path/to/new/datastream text_content"
@@ -26,8 +26,10 @@ def show_syntax
   puts "To update a field in a document. The field_name must include the namespace (e.g. dc:title)"
   puts "    furl update http://full/path/to/object field_name old_value new_value"
   puts ""
-  puts "Samples"
-  puts '    furl createobj http://localhost:8080/rest/testDoc1'
+  puts ""
+  puts "Samples (assumming Fedora 4 is running on port 8080)"
+  puts ""
+  puts '    furl createrdf http://localhost:8080/rest/testRdfSource1'
   puts '    furl createds http://localhost:8080/rest/testDoc1/testDataSet1 "some text"'
   puts '    furl get http://localhost:8080/rest/testDoc1'
   puts '    furl get http://localhost:8080/rest/testDoc1/testDataSet1'
@@ -61,8 +63,8 @@ if action != nil && object_url != nil
   when "createds"
     content = ARGV[2]
     doc = api.create_datastream(object_url, content) if content != nil
-  when "createobj"
-    doc = api.create_object(object_url)
+  when "createrdf"
+    doc = api.create_rdf(object_url)
   when "fixity"
     doc = api.fixity(object_url) 
   when "versions"
