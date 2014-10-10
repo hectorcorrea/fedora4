@@ -12,9 +12,7 @@
 # 
 require "net/http"
 require "uri"
-require "digest/sha1"
 require "./fedora_doc.rb"
-
 class FedoraApi
 
   HTTP_CREATED = 201
@@ -43,14 +41,18 @@ class FedoraApi
   # http://localhost:8080/rest/some/long/path/decided/by/fedora.
   def create_rdf(resource_uri = nil)
     # TODO: Accept a variable set of properties
-    # TODO: should I enable versioning for RDF sources?
     if resource_uri == nil
       response = create_rdf_auto_id
     else
       response = create_rdf_custom_id resource_uri
     end
     doc = FedoraDoc.new(response)
-    log "RDF resource created at #{doc.location}"
+    if doc.status == HTTP_CREATED
+      log "RDF source created at #{doc.location}"
+      enable_versioning doc.location
+    else
+      log "RDF source not created. HTTP status was #{doc.status}"
+    end
     doc
   end
 
@@ -69,11 +71,11 @@ class FedoraApi
       http.request(request)
     } 
     doc = FedoraDoc.new(response)    
-    if doc.status == HTTP_CREATED
-      log "\tNon-RDF resource created. Content available at #{doc.location}"
+    if doc.status == HTTP_CREATED || doc.status == HTTP_NO_CONTENT
+      log "Non-RDF source created. Content available at #{doc.location}"
       enable_versioning new_resource_uri
     else
-      log "\tNon-RDF status was #{doc.status}"
+      log "Non-RDF source not created. HTTP status was #{doc.status}"
     end
     doc
   end
@@ -109,6 +111,39 @@ class FedoraApi
   end
 
 
+  # Updates the value of a field in an RDF source in Fedora.
+  # The update is done via an HTTP PATCH passing the field and
+  # value to update via an SparQL update in the body of the request. 
+  # 
+  # Field must be in the form <http://whatever/field-name> 
+  # Old value must be in quotes, e.g. "16801"
+  # New value must be in quotes, e.g. "16802"
+  def update(resource_uri, field, old_value, new_value)
+    uri = build_uri_for_resource resource_uri 
+    log "update for #{uri}"
+    response = Net::HTTP.start(uri.hostname, uri.port) {|http|
+      request = Net::HTTP::Patch.new(uri.path)
+      request["Content-Type"] = "application/sparql-update"
+      request.body = <<-eos 
+        PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        DELETE { <> #{field} #{old_value} . }
+        INSERT { <> #{field} #{new_value} . }
+        WHERE { }
+      eos
+      log request.body
+      http.request(request)
+    }    
+    doc = FedoraDoc.new(response)
+    if doc.status == HTTP_NO_CONTENT
+      log "updated #{resource_uri}"
+      enable_versioning resource_uri
+    else
+      log("update failed: \r\n" + http_response_to_s(response)) if doc.status != HTTP_NO_CONTENT
+    end
+    doc
+  end
+
+
   # Returns version information for a resource 
   # In theory it should work for both RDF and non-RDF sources but 
   # at this point I am only enabling versions in create_non_rdf()
@@ -127,30 +162,6 @@ class FedoraApi
   end
 
 
-  def remove_first_slash(str)
-    return str[1..-1] if str.start_with? "/"
-    str
-  end
-
-
-  def http_response_to_s(response, include_body = true)
-    headers = ""
-    response.to_hash.each do |k,v| 
-      headers += "#{k} = #{v}\r\n"
-    end
-
-    str = <<-eos 
-      * Status: #{response.code}
-      * Headers 
-      #{headers}
-    eos
-
-    if include_body
-      str += "* Body\r\n #{response.body}"
-    end
-  end
-
-
   def build_uri_for_resource(resource_uri)
     if resource_uri.downcase.start_with? "http://"
       # Assume resource_uri is already a full URL to Fedora.
@@ -161,11 +172,6 @@ class FedoraApi
       uri = URI.parse("#{@fedora_url + resource_uri}")
     end
     uri
-  end
-
-
-  def log(text)
-    puts "api: #{text}" if @verbose
   end
 
 
@@ -196,13 +202,8 @@ class FedoraApi
       request = Net::HTTP::Put.new(uri.path)
       title = "Sample RDF source created at #{Time.now.to_s} (#{rand(1000)})"
       request["Content-Type"] = "text/turtle"
-      # request.body = <<-eos 
-      #   <> <http://fedora.info/definitions/v4/rels-ext#hasModel> "#{@default_model}" ;
-      #      <http://purl.org/dc/elements/1.1/title> "#{title}" .
-      # eos
       request.body = <<-eos 
-        <> <http://purl.org/dc/elements/1.1/title> "#{title}" ;
-          <http://somedomain.com/whatever/1.4/zipcode> "16801" .
+        <> <http://purl.org/dc/elements/1.1/title> "#{title}" .
       eos
       log request.body
       http.request(request)
@@ -223,6 +224,29 @@ class FedoraApi
       log "Could not enable versioning\r\n" + http_response_to_s(response)
     end
     response
+  end
+
+
+  def http_response_to_s(response, include_body = true)
+    headers = ""
+    response.to_hash.each do |k,v| 
+      headers += "#{k} = #{v}\r\n"
+    end
+    str = "* Status: #{response.code}\r\n* Headers\r\n#{headers}\r\n"
+    if include_body
+      str += "* Body\r\n #{response.body}\r\n"
+    end
+  end
+
+
+  def log(text)
+    puts "api: #{text}" if @verbose
+  end
+
+
+  def remove_first_slash(str)
+    return str[1..-1] if str.start_with? "/"
+    str
   end
 
 end

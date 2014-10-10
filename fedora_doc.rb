@@ -1,3 +1,4 @@
+# Helper class to capture details of a Fedora Resource from an HTTP response 
 class FedoraDoc
   attr_reader :status, :headers, :body, :location
 

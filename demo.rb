@@ -13,50 +13,42 @@ timestamp_url = timestamp.gsub(':', '-').gsub(' ', '-')
 fedora_url = "http://localhost:8080/rest"               # use this if you are using Fedora standalone
 fedora_jetty_url = "http://localhost:8983/fedora/rest"  # use this if you are using Fedora through Hydra-Jetty
 root_url = fedora_jetty_url
-api = FedoraApi.new(root_url, true)
+verbose = true
+api = FedoraApi.new(root_url, verbose)
 
 
 # Create a new RDF source (using the timestamp as the URI)
 puts "=" * 50
 new_doc = api.create_rdf timestamp_url
 
+# Display the information (in turtle) about the RDF source
+# (this is a long list, as in 50+ very long lines)
+puts "=" * 50
+api.get timestamp_url
+
 # Add a child non-RDF source (content) to our RDF source
 puts "=" * 50
 new_doc = api.create_non_rdf timestamp_url + "/content", "hello world"
-
-# Display the information (in turtle) about the RDF source
-puts "=" * 50
-new_doc = api.get timestamp_url
-
-# # Display the information (in turtle) about the non-RDF source
-# # (this is possible but meaningless? maybe it makes to get version/fixity data)
-# puts "=" * 50
-# new_doc = api.get timestamp_url + "/content"
 
 # Display the content of the non-RDF source
 puts "=" * 50
 new_doc = api.get_content timestamp_url + "/content"
 
+# Add a new field
+puts "=" * 50
+new_doc = api.update(timestamp_url, "<http://somedomain/city>", '""', '"state college"')
+api.get timestamp_url
+
+# Update the new field
+puts "=" * 50
+new_doc = api.update(timestamp_url, "<http://somedomain/city>", '"state college"', '"Gotham City"')
+api.get timestamp_url
+
+
 # Display version information for the non-RDF source
-puts "=" * 50
-new_doc = api.versions timestamp_url + "/content"
-
-# Display fixity information for the non-RDF source
-puts "=" * 50
-new_doc = api.fixity timestamp_url + "/content"
-
-
-
-# # Run a Fixity check on the new datastream
 # puts "=" * 50
-# puts "Running a fixity check on #{datastream.location}..."
-# fixity = api.fixity(datastream.location)
-# puts "\tFixity result: "
-# puts fixity.body[0..60] + "[truncated]"
-# if fixity.body.include? ">SUCCESS<" 
-#   puts "\tSUCCESS"
-# else
-#   puts "\tFAILURE"
-# end
-# puts
+# new_doc = api.versions timestamp_url + "/content"
 
+# # Display fixity information for the non-RDF source
+# puts "=" * 50
+# new_doc = api.fixity timestamp_url + "/content"
