@@ -2,7 +2,9 @@ A set of very basic demos using the Fedora 4 HTTP API from Ruby.
 
 I wrote this code as I experiment with Fedora 4 in order to help me learn how Fedora 4 works. In the process I had to learn a little bit about RDF triples and SparQL. In has been a fun experiment and I hope it helps others that want to peek behind the curtain on how Fedora REST API works.
 
-This code goes straight from Ruby to Fedora via HTTP without using any external gems. It is as bare-bones as it gets and might be helpful to learn how the Fedora HTTP API works, but it is not production ready. This is just a learning tool.
+This code goes straight from Ruby to Fedora via HTTP without using any external gems. It is as bare-bones as it gets and might be helpful to learn how the Fedora HTTP API works, but it is not production ready. This is just a learning tool. 
+
+The core of the code is in `fedora_api.rb`. Take a look at this file to get a better idea on the HTTP requests that are sent to Fedora for each of the operations. 
 
 
 Requirements
@@ -40,8 +42,9 @@ furl
 furl is Ruby program that acts a mini "cURL for Fedora". Assuming the Fedora API is available at http://localhost:8080/rest you can execute commands as follow: 
 
 	ruby furl.rb http://localhost:8080/rest create resourceX
-	ruby furl.rb http://localhost:8080/rest get objectX
-	ruby furl.rb http://localhost:8080/rest createcontent objectX/content "some text"
+	ruby furl.rb http://localhost:8080/rest get resourceX
+	ruby furl.rb http://localhost:8080/rest createcontent resourceX/content "some text"
+  ruby furl.rb http://localhost:8080/rest getcontent resourceX/content
 
 
 You just type `ruby furl.rb` to get help on what other commands are available.
