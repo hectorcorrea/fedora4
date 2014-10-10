@@ -24,7 +24,7 @@ There is a demo program that runs through the most basic functionality. It creat
 
 To run the demo do:
 
-	ruby demo.rb
+    ruby demo.rb
 
 After running the demo you should be able to go back to http://localhost:8080/rest/ and see your new document. The demo creates a new object everytime you run it, the name of the document is a timestamped and looks like this: "Sample object created at 2014-08-21 09:15:45 -0400"
 
@@ -41,10 +41,10 @@ furl
 ----
 furl is Ruby program that acts a mini "cURL for Fedora". Assuming the Fedora API is available at http://localhost:8080/rest you can execute commands as follow: 
 
-	ruby furl.rb http://localhost:8080/rest create resourceX
-	ruby furl.rb http://localhost:8080/rest get resourceX
-	ruby furl.rb http://localhost:8080/rest createcontent resourceX/content "some text"
-  ruby furl.rb http://localhost:8080/rest getcontent resourceX/content
+    ruby furl.rb http://localhost:8080/rest create resourceX
+    ruby furl.rb http://localhost:8080/rest get resourceX
+    ruby furl.rb http://localhost:8080/rest createcontent resourceX/content "some text"
+    ruby furl.rb http://localhost:8080/rest getcontent resourceX/content
 
 
 You just type `ruby furl.rb` to get help on what other commands are available.
