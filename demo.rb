@@ -12,7 +12,7 @@ timestamp_url = timestamp.gsub(':', '-').gsub(' ', '-')
 # Point the Fedora API to our instance of Fedora.
 fedora_url = "http://localhost:8080/rest"               # use this if you are using Fedora standalone
 fedora_jetty_url = "http://localhost:8983/fedora/rest"  # use this if you are using Fedora through Hydra-Jetty
-root_url = fedora_jetty_url
+root_url = fedora_url
 verbose = true
 api = FedoraApi.new(root_url, verbose)
 

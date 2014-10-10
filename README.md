@@ -1,5 +1,9 @@
 A set of very basic demos using the Fedora 4 HTTP API from Ruby.
 
+I wrote this code as I experiment with Fedora 4 in order to help me learn how Fedora 4 works. In the process I had to learn a little bit about RDF triples and SparQL. In has been a fun experiment and I hope it helps others that want to peek behind the curtain on how Fedora REST API works.
+
+This code goes straight from Ruby to Fedora via HTTP without using any external gems. It is as bare-bones as it gets and might be helpful to learn how the Fedora HTTP API works, but it is not production ready. This is just a learning tool.
+
 
 Requirements
 ------------
@@ -14,7 +18,7 @@ At this point you should be able to go browse to http://localhost:8080/rest/ and
 
 Demo  
 ----
-There is a demo program that runs through the most basic functionality. It creates a new Fedora object, fetches it, then adds a datastream to it, fetches the datastream, and runs a Fixity check on it.
+There is a demo program that runs through the most basic functionality. It creates a new RDF source in Fedora, fetches it, then adds a non-RDF source (e.g. file content) to it, fetches the content, adds a new field to the RDF source, and then updates it.
 
 To run the demo do:
 
@@ -33,21 +37,21 @@ The code
 
 furl
 ----
-furl is Ruby program that acts a mini "cURL for Fedora" and you can use it execute commands like:
+furl is Ruby program that acts a mini "cURL for Fedora". Assuming the Fedora API is available at http://localhost:8080/rest you can execute commands as follow: 
 
-	ruby furl.rb createobj http://localhost:8080/rest/objectX
-	ruby furl.rb get http://localhost:8080/rest/objectX
-	ruby furl.rb createds http://localhost:8080/rest/objectX/datasetY "some text"
+	ruby furl.rb http://localhost:8080/rest create resourceX
+	ruby furl.rb http://localhost:8080/rest get objectX
+	ruby furl.rb http://localhost:8080/rest createcontent objectX/content "some text"
 
-Notice that we always pass the full URL (including `http://localhost:8080/rest`) to the object to fetch or save. 
 
-furl is NOT a cURL replacement, it's more a toy to get started.
+You just type `ruby furl.rb` to get help on what other commands are available.
+
+furl is NOT a cURL replacement, it's more a toy to get started. 
 
 
 Other Resources
 ---------------
 Fedora 4 REST API documentation: https://wiki.duraspace.org/display/FF/RESTful+HTTP+API
 
-For a much more comprehensive sample of how to work with Fedora from Ruby take a look at Rubydora https://github.com/projecthydra/rubydora
-
+There are many other higher level Ruby gems to work with Fedora 4 that are **much better** than the code in this repo, in particular take a look at ActiveTriples and ActiveRecord. The `testdrive` repo by ecowles at  https://github.com/escowles/testdrive has a great demo on how to get started with those gems.
 
