@@ -9,10 +9,10 @@ The core of the code is in `fedora_api.rb`. Take a look at this file to get a be
 
 Requirements
 ------------
-These demos have been tested with Fedora 4 beta 1 and beta 2. 
+These demos have been tested with Fedora 4 beta 4. 
 
-* Download Fedora 4 Beta 2 "One-Click Run" from https://wiki.duraspace.org/display/FF/Fedora+4.0+Beta+2+Release+Notes
-* Run it via `open fcrepo-webapp-4.0.0-beta-01-jetty-console.war` (You need Java 8 installed for this to run)
+* Download Fedora 4 Beta 4 "One-Click Run" from https://wiki.duraspace.org/display/FF/Fedora+4.0+Beta+4+Release+Notes
+* Run it via `open fcrepo-webapp-4.0.0-beta-04-jetty-console.war` (You need Java 8 installed for this to run)
 * Click "Start" on the prompt to start Fedora. By default Fedora will listen on port 8080. 
 
 At this point you should be able to go browse to http://localhost:8080/rest/ and see the the Fedora web interface.
