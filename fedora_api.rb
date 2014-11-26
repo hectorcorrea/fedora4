@@ -64,7 +64,7 @@ class FedoraApi
     uri = build_uri_for_resource new_resource_uri    
     log "create_non_rdf at uri #{uri}"
     response = Net::HTTP.start(uri.hostname, uri.port) {|http|
-      request = Net::HTTP::Put.new(uri.path + "/fcr:content")
+      request = Net::HTTP::Put.new(uri.path)
       request["Content-Type"] = "text/plain"
       request.body = content
       log request.body
@@ -82,6 +82,8 @@ class FedoraApi
 
 
   # Fetches information about a resource (RDF or non-RDF) in Fedora.
+  # For an RDF source the result will be the triples
+  # For a non-RDF source the result will be the content (i.e. not the metadata) See get_metadata below.
   def get(resource_uri, format = "text/turtle")
     uri = build_uri_for_resource resource_uri     
     log "get #{uri}"
@@ -96,10 +98,10 @@ class FedoraApi
   end
 
 
-  # Fetches content of a non-RDF source in Fedora.
-  def get_content(resource_uri)
-    log "get_content for #{resource_uri}"
-    get "#{resource_uri}/fcr:content", "text/plain" 
+  # Fetches metadata of a non-RDF source in Fedora.
+  def get_metadata(resource_uri)
+    log "get_metadata for #{resource_uri}"
+    get "#{resource_uri}/fcr:metadata", "text/plain" 
   end
 
 
@@ -212,6 +214,8 @@ class FedoraApi
 
 
   def enable_versioning(resource_uri)
+    log "(skipping versioning code for now)"
+    return
     uri = build_uri_for_resource resource_uri
     log "enable_versioning for #{uri}"
     response = Net::HTTP.start(uri.hostname, uri.port) {|http|

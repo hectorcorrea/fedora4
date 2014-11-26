@@ -12,7 +12,7 @@ timestamp_url = timestamp.gsub(':', '-').gsub(' ', '-')
 # Point the Fedora API to our instance of Fedora.
 fedora_url = "http://localhost:8080/rest"               # use this if you are using Fedora standalone
 fedora_jetty_url = "http://localhost:8983/fedora/rest"  # use this if you are using Fedora through Hydra-Jetty
-root_url = fedora_url
+root_url = fedora_jetty_url
 verbose = true
 api = FedoraApi.new(root_url, verbose)
 
@@ -32,17 +32,21 @@ new_doc = api.create_non_rdf timestamp_url + "/content", "hello world"
 
 # Display the content of the non-RDF source
 puts "=" * 50
-new_doc = api.get_content timestamp_url + "/content"
+new_doc = api.get timestamp_url + "/content"
 
-# Add a new field
+# Display the metadata of the non-RDF source
 puts "=" * 50
-new_doc = api.update(timestamp_url, "<http://somedomain/city>", '""', '"state college"')
-api.get timestamp_url
+api.get_metadata timestamp_url + "/content"
 
-# Update the new field
-puts "=" * 50
-new_doc = api.update(timestamp_url, "<http://somedomain/city>", '"state college"', '"Gotham City"')
-api.get timestamp_url
+# # Add a new field
+# puts "=" * 50
+# new_doc = api.update(timestamp_url, "<http://somedomain/city>", '""', '"state college"')
+# api.get timestamp_url
+
+# # Update the new field
+# puts "=" * 50
+# new_doc = api.update(timestamp_url, "<http://somedomain/city>", '"state college"', '"Gotham City"')
+# api.get timestamp_url
 
 
 # Display version information for the non-RDF source
