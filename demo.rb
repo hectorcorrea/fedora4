@@ -2,7 +2,6 @@
 # create an RDF source, attach a Non-RDF source to it, and fetch it.
 require './fedora_api'
 
-
 # Use a timestamp as the URI of our resources so that we get a new URI
 # everytime we run this program. URI will look like "2014-10-09-15-45-22"
 timestamp = Time.now.to_s[0..18]
@@ -38,15 +37,16 @@ new_doc = api.get timestamp_url + "/content"
 puts "=" * 50
 api.get_metadata timestamp_url + "/content"
 
-# # Add a new field
-# puts "=" * 50
-# new_doc = api.update(timestamp_url, "<http://somedomain/city>", '""', '"state college"')
-# api.get timestamp_url
+# Add a new field
+puts "=" * 50
+new_doc = api.update(timestamp_url, "<http://somedomain/city>", '""', '"state college"')
+api.update(timestamp_url, "<http://somedomain/city>", '""', '"philadelphia"')
+api.get timestamp_url
 
-# # Update the new field
-# puts "=" * 50
-# new_doc = api.update(timestamp_url, "<http://somedomain/city>", '"state college"', '"Gotham City"')
-# api.get timestamp_url
+# Update the new field
+puts "=" * 50
+new_doc = api.update(timestamp_url, "<http://somedomain/city>", '"state college"', '"Gotham City"')
+api.get timestamp_url
 
 
 # Display version information for the non-RDF source
