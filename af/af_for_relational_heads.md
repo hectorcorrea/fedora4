@@ -135,7 +135,7 @@ For example, this request will create a new object in Fedora:
         <> <http://whatever/title> "Lord of the Rings"
         <> <http://whatever/isbn> "978-0618640157"
 
-See `book_demo.rb` at https://github.com/hectorcorrea/fedora4 for an example of this.
+See https://github.com/hectorcorrea/fedora4/blob/master/book_demo.rb for an example of this.
 
 
 
@@ -159,6 +159,8 @@ ActiveFedora is a Ruby gem that does for Fedora what ActiveRecord does for relat
     b = BookObject.find("123")
     puts b.title     # => "Lord of the Rings"
     puts b.isbn      # => "123-456-789"
+
+Source code available at https://github.com/hectorcorrea/fedora4/blob/master/af/af_demo.rb
 
 ActiveFedora automatically adds a property `hasModel` to the Fedora object to represent what Ruby class this object should be serialized into when it's fetched. That's how `b.title` and `b.isbn` were populated in the previous example. 
 
