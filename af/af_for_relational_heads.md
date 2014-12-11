@@ -171,6 +171,8 @@ You can also define relationships like the one between Books and Pages.
 
 Behind the scenes ActiveFedora uses ActiveTriples to handle triples and LDP to handle the HTTP communication to Fedora. 
 
+Here are several good basic examples on ActiveFedora by Esme: https://github.com/escowles/testdrive
+
 
 ScholarSphere and Fedora
 ------------------------
