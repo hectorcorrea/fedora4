@@ -99,19 +99,20 @@ A graph is a collection of triples:
     <book1> <page>    "page1"
     <book1> <page>    "page2"
 
-Ideally, subjects and predicates in a triple are URIs. 
-Objects can also be URIs and that's a way to express relationships.
+Subjects and predicates in a triple are URIs. Objects can be URIs (to reference another object) or literals. 
 
-    <http://libraries.psu.edu/catalog/book1>        <title>   "Lord of the Rings"
-    <http://libraries.psu.edu/catalog/book1/page1>  <number>  "1"
-    <http://libraries.psu.edu/catalog/book1/page1>  <text>    "hi frodo"
-    <http://libraries.psu.edu/catalog/book1/page2>  <number>  "2"
-    <http://libraries.psu.edu/catalog/book1/page2>  <text>    "dude, is that mordor?"
-    <http://libraries.psu.edu/catalog/book1>        <pages>   <http://libraries.psu.edu/catalog/book1/page1>    
-    <http://libraries.psu.edu/catalog/book1>        <pages>   <http://libraries.psu.edu/catalog/book1/page2>    
+    <http://libraries.psu.edu/catalog/book1>        <http://abc.org/1.1/title>   "Lord of the Rings"
+    <http://libraries.psu.edu/catalog/book1/page1>  <http://xyz.org/ns#/number>  "1"
+    <http://libraries.psu.edu/catalog/book1/page1>  <http://xyz.org/ns#/text>    "hi frodo"
+    <http://libraries.psu.edu/catalog/book1/page2>  <http://xyz.org/ns#/number>  "2"
+    <http://libraries.psu.edu/catalog/book1/page2>  <http://xyz.org/ns#/text>    "dude, is that mordor?"
+    <http://libraries.psu.edu/catalog/book1>        <http://xyz.org/ns#/pages>   <http://libraries.psu.edu/catalog/book1/page1>    
+    <http://libraries.psu.edu/catalog/book1>        <http://xyz.org/ns#/pages>   <http://libraries.psu.edu/catalog/book1/page2>    
 
-Predicates (fields) should also be URIs so that things like `title` are not ambiguous. 
-For example we could have something like `<http://dublincode.org/metadata/title>` instead of `<title>`
+It is common to use standard predicates defined by other organizations so that institutions can share information knowing that a specific predicate means the same thing across datasets. For example the following two predicates represent different things even if both are called "title"
+
+    http://purl.org/dc/elements/1.1/title
+    http://scholarsphere.psu.edu/ns#/title
 
 A triple is roughly the equivalent of a cell (row/column) in a relational database (See http://workingontologist.org, page 31) 
 
