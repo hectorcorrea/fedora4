@@ -28,6 +28,7 @@ Page table:
 And we use SQL to query and update:
 
     INSERT INTO books(id, title, isbn) VALUE (1, "Lord of the Rings", "123-456-789")
+
     INSERT INTO pages(id, book_id, number, text) VALUE (1, 1, 1, 'hi frodo')
     INSERT INTO pages(id, book_id, number, text) VALUE (2, 1, 2, 'dude is that mordor?')
 
@@ -96,8 +97,8 @@ A graph is a collection of triples:
     <page1> <text>    "hi frodo"
     <page2> <number>  "2"
     <page2> <text>    "dude, is that mordor?"
-    <book1> <page>    "page1"
-    <book1> <page>    "page2"
+    <book1> <page>    <page1>
+    <book1> <page>    <page2>
 
 Subjects and predicates in a triple are URIs. Objects can be URIs (to reference another object) or literals. 
 
@@ -184,29 +185,6 @@ A peak inside a GenericFile object in Fedora 3.
 The end
 -------
 .
-.
-.
-.
-.
-.
-.
-.
-.
-
-
-
-Misc
-----
-Creating the RDBMS Rails project 
-
-    rails new library
-    cd library
-    rails generate scaffold book title:string isbn:string
-    rails generate model page number:integer text:text book:references
-    rake db:migrate
-    rails s
-
-
 
 
 
