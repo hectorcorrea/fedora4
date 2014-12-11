@@ -110,7 +110,7 @@ Objects can also be URIs and that's a way to express relationships.
     <http://libraries.psu.edu/catalog/book1>        <pages>   <http://libraries.psu.edu/catalog/book1/page1>    
     <http://libraries.psu.edu/catalog/book1>        <pages>   <http://libraries.psu.edu/catalog/book1/page2>    
 
-Predicates (fields) should also be URIs so that things like `title` are not ambigous. 
+Predicates (fields) should also be URIs so that things like `title` are not ambiguous. 
 For example we could have something like `<http://dublincode.org/metadata/title>` instead of `<title>`
 
 A triple is roughly the equivalent of a cell (row/column) in a relational database (See http://workingontologist.org, page 31) 
