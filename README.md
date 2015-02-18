@@ -1,55 +1,40 @@
 A set of very basic demos using the Fedora 4 HTTP API from Ruby.
 
-I wrote this code as I experiment with Fedora 4 in order to help me learn how Fedora 4 works. In the process I had to learn a little bit about RDF triples and SparQL. In has been a fun experiment and I hope it helps others that want to peek behind the curtain on how Fedora REST API works.
+I wrote this code as I experiment with Fedora 4 in order to help me learn how Fedora 4 works. 
+In the process I had to learn a little bit about RDF triples and SparQL. In has been a fun 
+experiment and I hope it helps others that want to peek behind the curtain on how Fedora 
+REST API works.
 
-This code goes straight from Ruby to Fedora via HTTP without using any external gems. It is as bare-bones as it gets and might be helpful to learn how the Fedora HTTP API works, but it is not production ready. This is just a learning tool. 
-
-The core of the code is in `fedora_api.rb`. Take a look at this file to get a better idea on the HTTP requests that are sent to Fedora for each of the operations. 
+This code goes straight from Ruby to Fedora via HTTP without using any external gems. 
+It is as bare-bones as it gets and might be helpful to learn how the Fedora HTTP API 
+works, but it is not production ready. This is just a learning tool. 
 
 
 Requirements
 ------------
-These demos have been tested with Fedora 4 beta 4. 
+You need to have a running instance of Fedora 4 already in your system for these examples to work. 
 
-* Download Fedora 4 Beta 4 "One-Click Run" from https://wiki.duraspace.org/display/FF/Fedora+4.0+Beta+4+Release+Notes
-* Run it via `open fcrepo-webapp-4.0.0-beta-04-jetty-console.war` (You need Java 8 installed for this to run)
-* Click "Start" on the prompt to start Fedora. By default Fedora will listen on port 8080. 
+*If you don't have a running version of Fedora*
+  * Download the one-click-war from https://wiki.duraspace.org/display/FF/Downloads 
+  * Run it via `open fcrepo-webapp-4.0.0-beta-04-jetty-console.war` (You need Java installed for this to run)
+  * Click "Start" on the prompt to start Fedora. By default Fedora will listen on port 8080. 
+  * At this point you should be able to go browse to http://localhost:8080/rest/ and see the the Fedora web interface.
 
-At this point you should be able to go browse to http://localhost:8080/rest/ and see the the Fedora web interface.
-
-
-Demo  
-----
-There is a demo program that runs through the most basic functionality. It creates a new RDF source in Fedora, fetches it, then adds a non-RDF source (e.g. file content) to it, fetches the content, adds a new field to the RDF source, and then updates it.
-
-To run the demo do:
-
-    ruby demo.rb
-
-After running the demo you should be able to go back to http://localhost:8080/rest/ and see your new document. The demo creates a new object everytime you run it, the name of the document is a timestamped and looks like this: "Sample object created at 2014-08-21 09:15:45 -0400"
+If you are using Fedora from the Hydra-Jetty just make sure it is running. 
 
 
-The code
---------
+Code Examples
+-------------
+* fedora_explorer.rb shows how to fetch the metadata for all the objects in a Fedora 4 repository. 
+This is a basic example on how to walk the tree of nodes.
+
+
 * demo.rb is just that, a small demo of the basic functionality.
-* fedora_api.rb is a wrapper for the Fedora HTTP API.
-* fedora_doc.rb is a small helper class to convert an HTTP response from fedora_api into a Fedora document with fields like "location" and "body"
-* furl.rb is a small program to interface with fedora_api. 
+* fedora_api.rb, fedora_doc.rb, demo.rb, and furl.rb are a set of programs that I wrote to test the Fedora HTTP API when it was in Beta. 
+I do not know how well they run with the release version of Fedora. Use at your own risk. 
 
-
-furl
-----
-furl is Ruby program that acts a mini "cURL for Fedora". Assuming the Fedora API is available at http://localhost:8080/rest you can execute commands as follow: 
-
-    ruby furl.rb http://localhost:8080/rest create resourceX
-    ruby furl.rb http://localhost:8080/rest get resourceX
-    ruby furl.rb http://localhost:8080/rest createcontent resourceX/content "some text"
-    ruby furl.rb http://localhost:8080/rest getcontent resourceX/content
-
-
-You just type `ruby furl.rb` to get help on what other commands are available.
-
-furl is NOT a cURL replacement, it's more a toy to get started. 
+  * fedora_doc.rb is a small helper class to convert an HTTP response from fedora_api into a Fedora document with fields like "location" and "body"
+  * demo.rb runs through the most basic functionality. It creates a new RDF source in Fedora, fetches it, then adds a non-RDF source (e.g. file content) to it, fetches the content, adds a new field to the RDF source, and then updates it. After running the demo you should be able to go back to http://localhost:8080/rest/ and see your new document. The demo creates a new object everytime you run it, the name of the document is a timestamped and looks like this: "Sample object created at 2014-08-21 09:15:45 -0400"
 
 
 Other Resources
